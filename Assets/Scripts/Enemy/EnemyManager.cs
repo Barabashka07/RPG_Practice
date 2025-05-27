@@ -181,6 +181,7 @@
 using System;
 using System.Collections.Generic; 
 using Bootstraps;
+using Controllers;
 using Controllers.Entities; 
 using Controllers.Entities.HealthController;
 using Controllers.Entities.HealthController.Interfaces;
@@ -267,7 +268,7 @@ namespace Enemy
 
                 enemy.Init(peaceMode);
                 healthSystem.Init(enemiesPower);
-                healthSystem.onDeath.AddListener((_) => OnEnemyDeath());
+                healthSystem.onDeath.AddListener((_) => OnEnemyDeath(healthSystem.transform.position));
                 skillsController?.Init(null);
                 enemy.UniqueId = Guid.NewGuid().ToString();
                 enemy.PrefabIndex = prefabIndex;
@@ -379,16 +380,19 @@ namespace Enemy
                 character.UniqueId = enemyData.Id;
                 character.PrefabIndex = enemyData.PrefabIndex;
                 healthSystem.Init(enemiesPower);
-                healthSystem.onDeath.AddListener((_) => OnEnemyDeath());
+                healthSystem.onDeath.AddListener((_) => OnEnemyDeath(healthSystem.transform.position));
                 healthSystem.SetHealth(enemyData.Health);
                 skillsController?.Init(null);
                 _characters.Add(character);
             }
         }
 
-        private void OnEnemyDeath()
+        private void OnEnemyDeath(Vector3 pos)
         {
-            if (--_aliveCount <= 0)
+            ScoreSystem.Score += 1;
+            Debug.Log(ScoreSystem.Score);
+            _aliveCount--;
+            if (_aliveCount == 0)
             {
                 Debug.Log("All characters are dead");
                 if (!_bossSpawned)
@@ -400,6 +404,10 @@ namespace Enemy
                     Debug.Log("Boss is dead. Game over or proceed to next stage.");
                     // Здесь можно добавить логику завершения игры или перехода к следующему этапу
                 }
+            }
+            if(ScoreSystem.Score >= 3)
+            {
+                AudioManager.PlayClip(pos);
             }
         }
 
@@ -456,7 +464,7 @@ namespace Enemy
             }
 
             healthSystem.Init(_settingsInteractor.LoadSettings().EnemiesPower);
-            healthSystem.onDeath.AddListener((_) => OnEnemyDeath());
+            healthSystem.onDeath.AddListener((_) => OnEnemyDeath(healthSystem.transform.position));
             skillsController?.Init(null);
             boss.Init(_settingsInteractor.LoadSettings().PeaceMode);
             boss.UniqueId = Guid.NewGuid().ToString();

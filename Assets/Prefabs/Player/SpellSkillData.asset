@@ -17,6 +17,6 @@ MonoBehaviour:
   cooldownTime: 3
   sprite: {fileID: 0}
   damage:
-    Value: 20
+    Value: 100
     Type: 1
   _projectilePrefab: {fileID: 8396076092210822337, guid: fc2f11a48f7838f48bb41217a815b342, type: 3}

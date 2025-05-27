@@ -43,7 +43,10 @@ namespace Bootstraps
         [Header("Boss")]
         [SerializeField] private GameObject _boss;
         [SerializeField] private Vector3 _bossSpawnPoint;
-        
+
+
+        [Header("Audio")] 
+        [SerializeField] private AudioClip _enemyClip;
 
         private void Awake()
         {
@@ -55,6 +58,11 @@ namespace Bootstraps
             _playerDataInteractor = GameManager.Instance.GetPlayerDataInteractor();
             //var uiManager = new GameplayUIManager(_playerDataInteractor, viewManager);
             SetUpPlayer();
+            ScoreSystem scoreSystem = new();
+            AudioManager audioManager = new(_enemyClip);
+            
+            ScoreSystem.OnScoreUpdate += viewManager.GetView<ScoreView>().UpdateScore;
+            
             var skillsController = _player.GetComponent<SkillsController>();
             skillsController.Init(_camera);
             _cooldownView.SetMeleeListener(() =>
@@ -92,6 +100,8 @@ namespace Bootstraps
             /*Vector3 position = _playerDataInteractor.CurrentSave.Position;
             position.y += 3f;
             _player.transform.position = position;*/
+            
+            
             Debug.Log(_player.transform.position);
             Invoke(nameof(SetPos),.05f);
             Invoke(nameof(LogPos), 1f);
