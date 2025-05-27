@@ -294,7 +294,7 @@ namespace Enemy
                         Id = character.UniqueId,
                         Position = character.transform.position,
                         Health = healthSystem.Health,
-                        PrefabIndex = character.PrefabIndex,
+                        PrefabIndex = character is BossController ? _enemyPrefabs.Length : character.PrefabIndex,
                         IsBoss = character is BossController
                     });
                 }
@@ -318,7 +318,8 @@ namespace Enemy
             _characters.Clear();
             _aliveCount = enemyDataList.Count;
 
-            var enemiesPower = _settingsInteractor.LoadSettings().EnemiesPower;
+            var loadSettings = _settingsInteractor.LoadSettings();
+            var enemiesPower = loadSettings.EnemiesPower;
             foreach (var enemyData in enemyDataList)
             {
                 if (enemyData.PrefabIndex < 0 || enemyData.PrefabIndex >= _enemyPrefabs.Length && !enemyData.IsBoss)
@@ -378,6 +379,7 @@ namespace Enemy
 
                 character.UniqueId = enemyData.Id;
                 character.PrefabIndex = enemyData.PrefabIndex;
+                character.Init(loadSettings.PeaceMode);
                 healthSystem.Init(enemiesPower);
                 healthSystem.onDeath.AddListener((_) => OnEnemyDeath());
                 healthSystem.SetHealth(enemyData.Health);

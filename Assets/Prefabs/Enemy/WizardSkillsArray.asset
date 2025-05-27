@@ -15,3 +15,5 @@ MonoBehaviour:
   skillEntries:
   - _skillClass: {fileID: 11500000, guid: d8469dcb2db5454983d84fbcb712864c, type: 3}
     _skillData: {fileID: 11400000, guid: 4568260b7d0bce34caf201eaa28bbb19, type: 2}
+  - _skillClass: {fileID: 11500000, guid: 9f83fd6fadfb475c91d8845e3b4891f8, type: 3}
+    _skillData: {fileID: 11400000, guid: 33ad5fd93f9fbda478c1c72c0be71f46, type: 2}

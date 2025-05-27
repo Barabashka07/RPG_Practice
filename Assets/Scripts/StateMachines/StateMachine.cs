@@ -9,6 +9,8 @@ namespace StateMachines
 
         private Dictionary<Type, List<Transition>> _states = new Dictionary<Type, List<Transition>>();
 
+        private Dictionary<Type, List<Type>> _antiStates = new();
+        
         private List<Transition> _currentStates = new List<Transition>();
         private List<Transition> _anyStates = new List<Transition>();
 
@@ -26,17 +28,26 @@ namespace StateMachines
             _currentState?.Execute();
         }
 
-        public void SetState(IState state)
+        public void SetState(IState nextState)
         {
-            if (state == _currentState)
+            if (nextState == _currentState)
             {
                 return;
             }
+
+            if (_currentState != null)
+            {
+                _antiStates.TryGetValue(_currentState.GetType(), out var states);
+                if (states != null && states.Contains(nextState.GetType()))
+                {
+                    return;
+                }
+            }
             
             _currentState?.Exit();
-
-            _currentState = state;
             
+            _currentState = nextState;
+
             _states.TryGetValue(_currentState.GetType(), out _currentStates);
 
             if (_currentStates == null)
@@ -71,6 +82,19 @@ namespace StateMachines
             }
 
             _anyStates.Add(new Transition(state, predicate));
+        }
+
+        public void AddAntiState(IState targetState,IState antiState)
+        {
+            var type = targetState.GetType();
+            var item = antiState.GetType();
+            if (!_antiStates.ContainsKey(type))
+            {
+                var states = new List<Type>();
+                _antiStates.Add(type,states);
+            }
+
+            _antiStates[type].Add(item);
         }
 
         private Transition GetTransition()

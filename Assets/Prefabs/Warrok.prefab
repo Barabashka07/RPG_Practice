@@ -264,8 +264,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2593788555486557905}
   - component: {fileID: 2498612669314288526}
+  - component: {fileID: 4005900141889336934}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: FistCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -307,6 +308,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4005900141889336934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7361440164991489975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373762d3afc04094821e26ccf0ae529d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7512466628640738391
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,7 +645,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0cadcf33574494a361ea46bcbf3127, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sword: {fileID: 7361440164991489975}
+  _particles:
+  - {fileID: 1223526616464650, guid: c590b17884b119046bc6412066500b7d, type: 3}
+  - {fileID: 1518366863219760, guid: 3d35e81bdc5955041be098ef22e82a3b, type: 3}
+  - {fileID: 1725317912486240, guid: e55149ba6f4d00741984987e258c3378, type: 3}
+  - {fileID: 1975959190090480, guid: eca000ab44c908d4dab395f654753038, type: 3}
+  - {fileID: 1434627103891488, guid: 52d340ed9c2714c4f8aabf1f82df1b58, type: 3}
+  _fist: {fileID: 7361440164991489975}
   _rotationSpeed: 5
   searchRadius: 15
   attackRange: 3

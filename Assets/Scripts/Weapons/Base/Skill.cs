@@ -56,6 +56,7 @@ namespace Weapons.Base
         Melee,
         Fireball,
         Punch,
-        Heavy
+        Heavy,
+        Meteor
     }
 }

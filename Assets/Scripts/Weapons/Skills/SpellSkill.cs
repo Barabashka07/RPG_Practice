@@ -34,5 +34,10 @@ namespace Weapons.Skills
             rb.AddForce(castDir.normalized * 1000f);
             proj.StartCoroutine(proj.Ttl());
         }
+
+        public void CastPlug()
+        {
+            base.Cast();
+        }
     }
 }

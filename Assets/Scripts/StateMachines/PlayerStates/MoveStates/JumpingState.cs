@@ -15,6 +15,7 @@ namespace StateMachines.PlayerStates.MoveStates
         {
             MonoBehaviour.print("Entering Jumping State");
             PlayerAnimator.StartCoroutine(JumpRoutine());
+            InputManager.Instance.JumpInput = false;
         }
 
         public override void Execute()

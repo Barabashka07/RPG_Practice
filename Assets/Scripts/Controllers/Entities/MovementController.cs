@@ -26,7 +26,12 @@ namespace Controllers.Entities
         private float _groundCheckDistance;
         private bool _death;
         private Vector3 _inertialMoveDirection;
-        
+
+
+        [Header("Controller")] 
+        [SerializeField] private Transform _foot;
+        [SerializeField] private Transform _head;
+        [SerializeField] private Transform _root;
         
 
         private void Awake()
@@ -53,6 +58,7 @@ namespace Controllers.Entities
         private void Update()
         {
             _moveStateMachine.Tick();
+            //SetControllerParams();
             Rotate();
             ApplyGravity();
             CheckGround();
@@ -77,10 +83,10 @@ namespace Controllers.Entities
             _moveStateMachine.AddTransition(sprintingState,fallingState, ()=> !IsGrounded);
             _moveStateMachine.AddTransition(jumpingState, fallingState, () => !IsGrounded);
             _moveStateMachine.AddTransition(fallingState, idleState, () => IsGrounded);
-            _moveStateMachine.AddAnyTransition(jumpingState, () => _inputManager.JumpInput);
+            _moveStateMachine.AddAntiState(fallingState,jumpingState);
+            _moveStateMachine.AddAnyTransition(jumpingState, () => _inputManager.JumpInput && IsGrounded);
             _moveStateMachine.AddAnyTransition(deathState, () => _death);
-            
-            
+
             _moveStateMachine.SetState(idleState);
         }
         
@@ -142,6 +148,13 @@ namespace Controllers.Entities
         {
             _velocityVertical = _jumpForce;
             _controller.Move(Vector3.up * (_velocityVertical * Time.deltaTime));
+        }
+
+        private void SetControllerParams()
+        {
+            var size = _head.position.y - _foot.position.y;
+            _controller.height = size+.4f;
+            _controller.center = _root.localPosition;
         }
         
 

@@ -15,7 +15,7 @@ namespace Enemy
 {
     public class BossController : MonoBehaviour, ICharacterController
     {
-        
+        [SerializeField] private GameObject[] _particles;
         
         // public bool isDead { get; set; }
         // public string UniqueId { get; set; }
@@ -39,7 +39,7 @@ namespace Enemy
         
         
         
-        [SerializeField] private GameObject _sword;
+        [SerializeField] private GameObject _fist;
         
         public Collider SwordCollider { get; private set; }
         // public string UniqueId;
@@ -77,7 +77,14 @@ namespace Enemy
             _isPeaceful = isPeaceful;
             await GetPlayer();
             print(_playerTransform);
+            CreateParticles();
             BossStatesInit();
+        }
+
+        private void CreateParticles()
+        {
+            var part = _particles[Random.Range(0, _particles.Length)];
+            Instantiate(part, _fist.transform.position, Quaternion.identity, _fist.transform);
         }
 
         private async Task GetPlayer()

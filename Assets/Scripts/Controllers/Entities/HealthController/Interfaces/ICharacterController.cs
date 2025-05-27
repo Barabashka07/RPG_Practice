@@ -12,5 +12,7 @@ namespace Controllers.Entities.HealthController.Interfaces
         GameObject gameObject { get; } // Для уничтожения объекта
         HealthSystem GetComponent<T>() where T : Component; // Для доступа к компонентам
         T GetComponentInChildren<T>() where T : Component; // Для доступа к компонентам в дочерних объектах
+
+        void Init(bool isPeaceful);
     }
 }

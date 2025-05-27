@@ -702,9 +702,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.2499998
   m_TransitionOffset: 0
-  m_ExitTime: 0.75
+  m_ExitTime: 0.013019522
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -749,7 +749,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.5082329
+  m_TransitionDuration: 0.37021846
   m_TransitionOffset: 0.7272999
   m_ExitTime: 0.48596036
   m_HasExitTime: 1
@@ -1886,7 +1886,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mixamo_com
+  m_Name: Death
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []

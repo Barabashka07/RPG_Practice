@@ -20,7 +20,7 @@ namespace Controllers.SaveLoad.Saveables
         public float Health;
         public Vector3 Position;
         public int PrefabIndex;
-        public bool IsBoss { get; set; }
+        public bool IsBoss;
     }
     
     

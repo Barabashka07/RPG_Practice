@@ -3,11 +3,13 @@ using Controllers.Entities;
 using UnityEngine;
 using UnityEngine.AI;
 using Weapons.Base;
+using Weapons.Skills;
 
 namespace Enemy.States
 {
     public class RangeAttackState : StatesEnemyConst
     {
+        
         private SkillsController _skillsController;
         public RangeAttackState(EnemyController enemyController, EnemyAnimator animator, NavMeshAgent navMeshAgent, SkillsController skillsController ) : base(enemyController, animator, navMeshAgent)
         {
@@ -35,7 +37,24 @@ namespace Enemy.States
         private IEnumerator SpellCast()
         {
             yield return new WaitUntil(()=>EnemyAnimator.CheckAnimationState(0, 0.425f, "attackTest"));
-            _skillsController.Skills[SkillType.Fireball].Cast();
+            var plug = (SpellSkill)_skillsController.Skills[SkillType.Fireball];
+            if (Random.Range(0, 2) == 1)
+            {
+                _skillsController.Skills[SkillType.Fireball].Cast();
+            }
+            else
+            {
+                if (_skillsController.Skills[SkillType.Meteor]._isReady)
+                {
+                    _skillsController.Skills[SkillType.Meteor].Cast();
+                    plug.CastPlug();
+                }
+                else
+                {
+                    _skillsController.Skills[SkillType.Fireball].Cast();
+                }
+            }
+            
         }
     }
 }
