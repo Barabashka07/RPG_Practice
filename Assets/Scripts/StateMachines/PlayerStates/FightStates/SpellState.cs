@@ -15,6 +15,7 @@ namespace StateMachines.PlayerStates.FightStates
         public override void Enter()
         {
             Debug.Log("Entering Spell");
+            //Анимация каста
             PlayerAnimator.DoSpell();
             //FightController.swordGameObject.SetActive(false);
             PlayerAnimator.StartCoroutine(SpellCast());
@@ -34,7 +35,9 @@ namespace StateMachines.PlayerStates.FightStates
 
         private IEnumerator SpellCast()
         {
+            
             yield return new WaitUntil(()=>PlayerAnimator.CheckAnimationState((int)LayerNames.Fight, 0.425f, "Spell"));
+            //Спавн шарика с уроном
             SkillsController.Skills[SkillType.Fireball].Cast();
         }
     }

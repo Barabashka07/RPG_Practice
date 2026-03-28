@@ -6,6 +6,7 @@ using Weapons.Base;
 
 namespace StateMachines.PlayerStates.FightStates
 {
+    // Наследуемся от нашего шаблона FightPlayerState
     public class AttackState : FightPlayerState
     {
 
@@ -14,7 +15,7 @@ namespace StateMachines.PlayerStates.FightStates
         }
         
         
-
+        // Срабатывает ровно один раз в момент клика ЛКМ (когда StateMachine переключает на этот стейт)
         public override void Enter()
         {
             Debug.Log("Entering Melee");

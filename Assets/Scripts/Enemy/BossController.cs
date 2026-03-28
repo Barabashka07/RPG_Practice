@@ -13,6 +13,7 @@ using AttackState = Enemy.States.AttackState;
 
 namespace Enemy
 {
+    // Реализуем интерфейс ICharacterController
     public class BossController : MonoBehaviour, ICharacterController
     {
         [SerializeField] private GameObject[] _particles;
@@ -25,7 +26,7 @@ namespace Enemy
         // HealthSystem ICharacterController.GetComponent<T>() => GetComponent<HealthSystem>();
         // T ICharacterController.GetComponentInChildren<T>() => GetComponentInChildren<T>();
         
-        
+        // Свойства из интерфейса ICharacterController
         public bool isDead { get; set; }
         public string UniqueId { get; set; }
         public int PrefabIndex { get; set; }
@@ -44,6 +45,8 @@ namespace Enemy
         public Collider SwordCollider { get; private set; }
         // public string UniqueId;
         // public int PrefabIndex;
+
+        // Экземпляр конечного автомата
         private Canvas hpCanvas;
         private StateMachine enemyStateMachine;
         private BossAnimator bossAnimator;
@@ -63,15 +66,17 @@ namespace Enemy
         //public bool _superAttack { get; private set; }
         private void Awake()
         {
+            // Инициализация автомата
             enemyStateMachine = new StateMachine();
             _skillsController = GetComponent<SkillsController>();
             bossAnimator = GetComponent<BossAnimator>();
             healthSystem = GetComponent<HealthSystem>();
+            // Подписываемся на получение урона, чтобы проигрывать анимацию Hitted
             gameObject.GetComponent<IHittable>().onHit.AddListener(bossAnimator.DoHitEvent);
             _agent = GetComponent<NavMeshAgent>();
             hpCanvas = GetComponentInChildren<Canvas>();
         }
-
+        // Асинхронная инициализация, вызывается из EnemyManager    
         public async void Init(bool isPeaceful)
         {
             _isPeaceful = isPeaceful;
@@ -86,7 +91,7 @@ namespace Enemy
             var part = _particles[Random.Range(0, _particles.Length)];
             Instantiate(part, _fist.transform.position, Quaternion.identity, _fist.transform);
         }
-
+        // Асинхронный поиск игрока. Каждые 10 мс проверяет, заспавнился ли игрок.
         private async Task GetPlayer()
         {
             CharacterController player;
@@ -106,7 +111,7 @@ namespace Enemy
             _agent.SetDestination(_playerTransform.position);
             enemyStateMachine.Tick();
         }
-
+        // Плавный поворот к игроку (обычно вызывается из состояний атаки)
         public void RotateToPlayer()
         {
             Vector3 direction = _playerTransform.position - transform.position;

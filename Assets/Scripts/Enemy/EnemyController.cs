@@ -134,6 +134,7 @@ namespace Enemy
 
             if (_isPeaceful)
             {
+                // МЕХАНИКА СТРАХА: Если ХП меньше 30% в мирном режиме - враг убегает
                 enemyStateMachine.AddTransition(idleState, fearState, () => healthSystem.Health/healthSystem.MaxHealth <= .3f);
             }
             else
