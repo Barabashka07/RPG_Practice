@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace Views.Gameplay
 {
+    //Наследование от View
     public class PauseView : View
     {
         [SerializeField] private Button saveButton;
@@ -11,6 +12,7 @@ namespace Views.Gameplay
         [SerializeField] private Button loadLastButton;
         [SerializeField] private Button toLoadChooseButton;
 
+        // MVC 
         public void SetSaveButtonListener(Action callback)
         {
             saveButton.onClick.AddListener(callback.Invoke);

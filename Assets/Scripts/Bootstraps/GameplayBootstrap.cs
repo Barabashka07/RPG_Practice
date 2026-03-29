@@ -47,6 +47,7 @@ namespace Bootstraps
 
         private void Awake()
         {
+            //Спрятан курсор
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             var settngsInteractor = GameManager.Instance.GetSettingsInteractor();
@@ -55,6 +56,7 @@ namespace Bootstraps
             _playerDataInteractor = GameManager.Instance.GetPlayerDataInteractor();
             //var uiManager = new GameplayUIManager(_playerDataInteractor, viewManager);
             SetUpPlayer();
+            //Настройка UI кд способностей
             var skillsController = _player.GetComponent<SkillsController>();
             skillsController.Init(_camera);
             _cooldownView.SetMeleeListener(() =>
@@ -63,6 +65,8 @@ namespace Bootstraps
                 _cooldownView.SetSpellFillAmount(skillsController.Skills[SkillType.Fireball].GetReadyPercent()));
             _bossSpawnPoint = new Vector3(323.6f,261.71f, -103.5f);
             
+
+            //Сохранение позиции врагов
             var enemyManager = new EnemyManager(settngsInteractor,
                 _enemiesSpawnAreaExtents,
                 _enemies,
@@ -77,9 +81,11 @@ namespace Bootstraps
         
         private void SetUpPlayer()
         {   
+            // Спавн игрока
             Debug.Log(_playerDataInteractor.CurrentSave.Position);
             _player = Instantiate(_playerPrefab, _playerSpawnPoint.position, Quaternion.identity);
             Debug.Log(_player.transform.position);
+            // Настройка здоровья и привязка полоски (UI)
             _playerHealthSystem = _player.GetComponent<HealthSystem>();
             // healthBarView.Init(_playerHealthSystem.onHealthChanged);
             _playerHealthSystem.onHealthChanged.AddListener(_healthBarView.ChangeHp);
@@ -93,6 +99,7 @@ namespace Bootstraps
             position.y += 3f;
             _player.transform.position = position;*/
             Debug.Log(_player.transform.position);
+            //Блокируем через Invoke смену позиции при загрузке сейва
             Invoke(nameof(SetPos),.05f);
             Invoke(nameof(LogPos), 1f);
         }
