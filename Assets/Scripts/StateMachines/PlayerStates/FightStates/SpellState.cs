@@ -18,7 +18,7 @@ namespace StateMachines.PlayerStates.FightStates
             //Анимация каста
             PlayerAnimator.DoSpell();
             //FightController.swordGameObject.SetActive(false);
-            PlayerAnimator.StartCoroutine(SpellCast());
+            PlayerAnimator.StartCoroutine(SpellCast()); // Таймер вылета снаряда через корутину
 
         }
 
@@ -35,7 +35,7 @@ namespace StateMachines.PlayerStates.FightStates
 
         private IEnumerator SpellCast()
         {
-            
+            //Пауза до выброса руки для магии 
             yield return new WaitUntil(()=>PlayerAnimator.CheckAnimationState((int)LayerNames.Fight, 0.425f, "Spell"));
             //Спавн шарика с уроном
             SkillsController.Skills[SkillType.Fireball].Cast();

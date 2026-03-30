@@ -197,16 +197,17 @@ namespace Enemy
     {
         private CharacterController _player;
         private readonly SettingsInteractor _settingsInteractor;
-        private readonly GameObject[] _enemyPrefabs;
-        private readonly Vector2 _enemiesSpawnAreaExtents;
-        private readonly Vector3 _enemiesSpawnAreaCenter;
+        private readonly GameObject[] _enemyPrefabs; //Префабы врагов
+        private readonly Vector2 _enemiesSpawnAreaExtents; //Размер зоны
+        private readonly Vector3 _enemiesSpawnAreaCenter; // Как близко они друг к другу при спавне(центрирование зоны)
         private readonly int _enemiesCount;
-        private readonly List<ICharacterController> _characters = new();
+        private readonly List<ICharacterController> _characters = new(); //Создание списка всех живых мобов
         private readonly GameObject _bossPrefab;
         private readonly Vector3 _bossSpawnPoint;
         private bool _bossSpawned;
         private int _aliveCount;
 
+        //Конструктор вызова при загрузке уровня
         public EnemyManager(SettingsInteractor settingsInteractor, Vector2 enemiesSpawnAreaSize,
             GameObject[] enemyPrefabs,
             Vector3 enemiesSpawnAreaCenter, int enemiesCount, GameObject bossPrefab, Vector3 bossSpawnPoint,
@@ -216,10 +217,12 @@ namespace Enemy
             _enemiesSpawnAreaExtents = enemiesSpawnAreaSize;
             _enemyPrefabs = enemyPrefabs ?? throw new ArgumentNullException(nameof(enemyPrefabs));
             _enemiesSpawnAreaCenter = enemiesSpawnAreaCenter;
+            //Тут кол-во врагов
             _enemiesCount = enemiesCount;
             _bossPrefab = bossPrefab ?? throw new ArgumentNullException(nameof(bossPrefab));
             _bossSpawnPoint = bossSpawnPoint;
             _player = player;
+            //Тут спавним кол - во врагов
             SpawnEnemies(_enemiesCount);
         }
 
@@ -231,8 +234,10 @@ namespace Enemy
             var peaceMode = loadSettings.PeaceMode;
             for (int i = 0; i < enemiesCount; i++)
             {
+                //Тут рандом при спавне 50 на ближника 50 на дальника
                 int prefabIndex = Random.Range(0, _enemyPrefabs.Length);
                 var enemyPrefab = _enemyPrefabs[prefabIndex];
+                //Именно тут спавн в рандомной точке на карте внутри зоны 
                 var enemy = Object.Instantiate(enemyPrefab, GetRandomPosition(), Quaternion.identity)
                     .GetComponent<EnemyController>();
                 if (enemy == null)
@@ -252,19 +257,19 @@ namespace Enemy
                 var healthBarView = enemy.GetComponentInChildren<HealthBarView>();
                 if (healthBarView == null)
                 {
-                    Debug.LogWarning($"Enemy {enemy.name} does not have HealthBarView component.");
+                    Debug.LogWarning($"Enemy {enemy.name} does not have HealthBarView component."); //Проверка ищем UI-полоску здоровья над головой моба и контроллер навыков.
                 }
                 else
                 {
                     healthSystem.onHealthChanged.AddListener(healthBarView.ChangeHp);
-                }
+                }   
 
                 var skillsController = enemy.GetComponent<SkillsController>();
                 if (skillsController == null)
                 {
                     Debug.LogWarning($"Enemy {enemy.name} does not have SkillsController component.");
                 }
-
+                //Инициализация легкогомода
                 enemy.Init(peaceMode);
                 healthSystem.Init(enemiesPower);
                 healthSystem.onDeath.AddListener((_) => OnEnemyDeath());
@@ -280,6 +285,7 @@ namespace Enemy
             List<EnemyData> enemyDataList = new();
             foreach (ICharacterController character in _characters)
             {
+                
                 if (character != null && !character.isDead)
                 {
                     var healthSystem = character.GetComponent<HealthSystem>();
@@ -387,9 +393,10 @@ namespace Enemy
                 _characters.Add(character);
             }
         }
-
+        //Счетчик живых
         private void OnEnemyDeath()
         {
+            //Если кол-во живых меньше или равно 0 то все мобы мертвые и мы спавним босса
             if (--_aliveCount <= 0)
             {
                 Debug.Log("All characters are dead");
@@ -404,9 +411,10 @@ namespace Enemy
                 }
             }
         }
-
+        //Случайый спавн босса на карте 
         private Vector3 GetRandomPosition()
         {
+            // Берем центр, отступаем случайно влево/вправо (X) и вперед/назад (Z) в пределах Extents
             return new Vector3(
                 Random.Range(_enemiesSpawnAreaCenter.x - _enemiesSpawnAreaExtents.x,
                     _enemiesSpawnAreaCenter.x + _enemiesSpawnAreaExtents.x),
@@ -417,6 +425,7 @@ namespace Enemy
 
         private void SpawnBoss()
         {
+            //Спавн босса 
             if (_bossSpawned) return;
             _bossSpawned = true;
             _aliveCount = 1;
