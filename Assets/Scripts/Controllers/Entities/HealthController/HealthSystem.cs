@@ -92,6 +92,7 @@ using Weapons.Base;
 
 namespace Controllers.Entities.HealthController
 {
+    //(получение урона, изменение ХП, смерть)
     public class HealthSystem : MonoBehaviour, IDamageable, IHealthChange, IHittable, IKillable
     {
         private ICharacterController _controller;
@@ -106,19 +107,19 @@ namespace Controllers.Entities.HealthController
             get => _health;
             set
             {
-                _health = value;
+                _health = value; //Значение ХП, обновление UI
                 onHealthChanged?.Invoke(_health, MaxHealth);
             }
         }
 
         public float MaxHealth { get; private set; } = 100f;
 
-        public UnityEvent<float, float> onHealthChanged { get; } = new();
+        public UnityEvent<float, float> onHealthChanged { get; } = new(); //Тут передаем хп
         public UnityEvent<bool> onDeath { get; } = new();
-        public UnityEvent onHit { get; } = new();
+        public UnityEvent onHit { get; } = new(); //Получение удара
         [SerializeField] private float _health;
 
-        public void Init(float healthMultiplier)
+        public void Init(float healthMultiplier) //Через init передаем зп боссу и всем остальным - healthMultiplier
         {
             MaxHealth *= healthMultiplier;
             SetHealthToMax();
@@ -136,24 +137,26 @@ namespace Controllers.Entities.HealthController
 
         public void TakeDamage(Damage damage)
         {
-            if (Health - damage.Value <= 0)
+            //Если урон боьше текущего хп = смэрть
+            if (Health - damage.Value <= 0) // Фатальный урон
             {
                 if (_controller != null)
                 {
-                    _controller.isDead = true;
+                    _controller.isDead = true; //Проверка смерти через стейт машину
                 }
 
                 Health = 0;
-                onDeath?.Invoke(true);
+                onDeath?.Invoke(true); // Смска о смерти 
             }
             else
             {
-                Health -= damage.Value;
+                //Если хп много тут м просто отнимаем хп
+                Health -= damage.Value; // Отнимаем Хп
                 onHit?.Invoke();
             }
         }
     }
-
+    
     public interface IKillable
     {
         public UnityEvent<bool> onDeath { get; }

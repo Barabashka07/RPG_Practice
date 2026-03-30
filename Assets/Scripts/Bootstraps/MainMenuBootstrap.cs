@@ -9,10 +9,12 @@ namespace Bootstraps
     {
         private void Awake()
         {
+            //Поиск кнопок, картинок от этих кнопок
             var viewManager = GetComponent<ViewManager>();
+            //Переключение экранов через контроллер через манагер
             MainMenuManager menuManager = new(viewManager, GameManager.Instance.GetSettingsInteractor(),
                 GameManager.Instance.GetPlayerDataInteractor());
-           
+                //Дебаг
             InvokeRepeating(nameof(Do),0f,1f);
         }
 

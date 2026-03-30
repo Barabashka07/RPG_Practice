@@ -74,15 +74,23 @@ namespace Controllers.Entities
             var deathState = new DeathState(this,_playerAnimator);
             gameObject.GetComponent<IKillable>().onDeath.AddListener(value => _death = value);
 
+            //Если мы стоим и клавиатура или мышка не двигаются MoveInput, значит пора идти
             _moveStateMachine.AddTransition(idleState, walkingState, () => _inputManager.MoveInput != Vector2.zero);
+            //Если мы встали и нажали шифт сразу переходим в бег
             _moveStateMachine.AddTransition(idleState, sprintingState, () => _inputManager.SprintInput);
+            //Шли, отпустили, встали
             _moveStateMachine.AddTransition(walkingState, idleState, () => _inputManager.MoveInput == Vector2.zero);
+            //Шли,нажади шифт побежали
             _moveStateMachine.AddTransition(walkingState, sprintingState, () => _inputManager.SprintInput);
+            //Если мы допустим прыгнули и почвы под ногами нет, то анимка падения
             _moveStateMachine.AddTransition(walkingState,fallingState, ()=> !IsGrounded);
+            //Если мы на земле и нажали прыжок-прыгаем
             _moveStateMachine.AddTransition(sprintingState,walkingState, () => !_inputManager.SprintInput);
+            //Переход  покой после прыжка
             _moveStateMachine.AddTransition(sprintingState,fallingState, ()=> !IsGrounded);
             _moveStateMachine.AddTransition(jumpingState, fallingState, () => !IsGrounded);
             _moveStateMachine.AddTransition(fallingState, idleState, () => IsGrounded);
+            //Запрет двойного прыжка
             _moveStateMachine.AddAntiState(fallingState,jumpingState);
             _moveStateMachine.AddAnyTransition(jumpingState, () => _inputManager.JumpInput && IsGrounded);
             _moveStateMachine.AddAnyTransition(deathState, () => _death);
@@ -94,30 +102,33 @@ namespace Controllers.Entities
         {
             if (!_controller.isGrounded)
             {
-                _velocityVertical -= 15f * Time.deltaTime;
-                _controller.Move(Vector3.up * (_velocityVertical * Time.deltaTime));
+                _velocityVertical -= 15f * Time.deltaTime; //Имитация свободного падения 
+                _controller.Move(Vector3.up * (_velocityVertical * Time.deltaTime)); //Тут та=янем персонажа вниз
             }
             else
             {
-                _velocityVertical = 0;
+                _velocityVertical = 0; //Проверка если персонаж упал, и консулся земли то скорость падения 0
             }
         }
 
         private void Rotate()
         {
             if(!_camera) return;
+            //Направление камеры и обнуление Y, чтобы персонаж не тянулся к земле
             Vector3 forwardDirection = _camera.transform.forward;
             Vector3 rightDirection = _camera.transform.right;
             forwardDirection.y = 0;
             rightDirection.y = 0;
             if (_inputManager.RMBInput)
             {
+                //Хитровыебанная система, если наша камера всмотрит в другую строну, то персонаж повернется и к нец тоже
                 Quaternion desiredRotation = Quaternion.LookRotation(forwardDirection, Vector3.up) * Quaternion.Euler(0,30f,0);
                 transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, _rotationSpeed * Time.deltaTime);
 
             }
             else if (_inputManager.MoveInput != Vector2.zero)
             {
+                //Персонаж поворячивается лицом в сторону бега
                 Vector3 moveDirection = forwardDirection.normalized * _inputManager.MoveInput.y + rightDirection.normalized * _inputManager.MoveInput.x;
                 Quaternion desiredRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
                 transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, _rotationSpeed * Time.deltaTime);
@@ -129,29 +140,34 @@ namespace Controllers.Entities
 
         public void Move()
         {
+            //Вектор камеры + поворот W\S A\D 
             Vector3 forwardDirection = _camera.transform.forward;
             Vector3 rightDirection = _camera.transform.right;
             forwardDirection.y = 0;
             rightDirection.y = 0;
             Vector3 moveDirection = forwardDirection.normalized * _inputManager.MoveInput.y + rightDirection.normalized * _inputManager.MoveInput.x;
+            //Куда бежим
             _inertialMoveDirection = moveDirection;
-        
+            //Движение коллайдера
             _controller.Move(moveDirection * (Time.deltaTime * moveSpeed));
         }
 
         public void InertialMove()
         {
+            //Инерция в полете - совершили прыжок в нажимаем WASD 
             _controller.Move(_inertialMoveDirection * (Time.deltaTime * moveSpeed));
         }
     
         public void Jump()
         {
+            //Прыдок через _jumpForce толчок вверх
             _velocityVertical = _jumpForce;
             _controller.Move(Vector3.up * (_velocityVertical * Time.deltaTime));
         }
 
         private void SetControllerParams()
         {
+            //Динамический коллайдер - проверка где мы(на кустике или на земле) 
             var size = _head.position.y - _foot.position.y;
             _controller.height = size+.4f;
             _controller.center = _root.localPosition;
@@ -160,6 +176,7 @@ namespace Controllers.Entities
 
         private void CheckGround()
         {
+            //Проверка что мы стоим на земле
             IsGrounded = Physics.Raycast(transform.position, Vector3.down, _groundCheckDistance, LayerMask.GetMask("Ground"));
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Controllers.SaveLoad.PlayerSaves;
 using Controllers.SaveLoad.Settings;
 using UnityEngine;
@@ -29,7 +29,7 @@ namespace Controllers
         
         public PlayerDataInteractor GetPlayerDataInteractor() => _playerDataInteractor;
         public SettingsInteractor GetSettingsInteractor() => _settingsInteractor;
-
+        //Сюда перекидываем все наши Bootstraper
         public void Init(SettingsInteractor settingsInteractor, PlayerDataInteractor playerDataInteractor)
         {
             _settingsInteractor = settingsInteractor;
@@ -39,6 +39,7 @@ namespace Controllers
 
         private void Awake()
         {
+            //От дубдикатов, если есть уже то удаляем
             if (_instance != null && _instance != this)
             {
                 Destroy(gameObject);
@@ -46,6 +47,7 @@ namespace Controllers
             else
             {
                 _instance = this;
+                //Если уже есть не удаляем
                 DontDestroyOnLoad(gameObject);
             }
             
